@@ -1,6 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Phone, Globe, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Star, MapPin, Phone, Globe, ExternalLink, Map as MapIcon } from "lucide-react";
+import { useState } from "react";
+import Map from "./Map";
 
 export interface Business {
   name: string;
@@ -10,7 +13,7 @@ export interface Business {
   address?: string;
   phone?: string;
   website?: string;
-  coordinates?: string;
+  coordinates?: { lat: number; lng: number };
   mapsLink?: string;
 }
 
@@ -19,6 +22,8 @@ interface BusinessCardProps {
 }
 
 export const BusinessCard = ({ business }: BusinessCardProps) => {
+  const [showMap, setShowMap] = useState(false);
+  
   return (
     <Card className="p-6 hover:shadow-glow transition-all duration-300 border border-border">
       <div className="space-y-4">
@@ -90,18 +95,27 @@ export const BusinessCard = ({ business }: BusinessCardProps) => {
           )}
         </div>
 
-        {/* Maps Link */}
-        {business.mapsLink && (
-          <div className="pt-2 border-t border-border">
-            <a 
-              href={business.mapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
+        {/* Mapbox Integration */}
+        {business.coordinates && (
+          <div className="pt-2 border-t border-border space-y-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowMap(!showMap)}
+              className="w-full"
             >
-              View on Google Maps
-              <ExternalLink className="w-3 h-3" />
-            </a>
+              <MapIcon className="w-4 h-4 mr-2" />
+              {showMap ? 'Hide Map' : 'Show on Map'}
+            </Button>
+            
+            {showMap && (
+              <Map
+                longitude={business.coordinates.lng}
+                latitude={business.coordinates.lat}
+                zoom={15}
+                className="w-full h-[200px] rounded-md"
+              />
+            )}
           </div>
         )}
       </div>
