@@ -2,13 +2,14 @@ import { Business } from '@/components/BusinessCard';
 
 // Backend API base URL - REPLACE WITH YOUR ACTUAL BACKEND URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+console.log('API_BASE_URL:', API_BASE_URL);
 
 export class ApiService {
   static async searchBusinesses(query: string): Promise<Business[]> {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/search?query=${encodeURIComponent(query)}`
-      );
+      const url = `${API_BASE_URL}/api/search?query=${encodeURIComponent(query)}`;
+      console.log('Attempting to fetch from:', url);
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
